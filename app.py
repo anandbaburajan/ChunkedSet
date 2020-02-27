@@ -10,8 +10,8 @@ class Chunk():   #Each chunk on a different computer
         self.data = set()   #Numbers stored in a set, implemented as a hashtable
 
 @app.route("/api/insert/", methods=['POST'])   #Endpoint for inserting a number
-def insert():   #Post request JSON body format: {"num":1}
-    if not request.json or not 'num' in request.json:
+def insert():
+    if not request.json or not 'num' in request.json:   #If request body is incorrect
         abort(400)
     num = request.json['num']   #Retrieve number from request
     if Chunk.total_elements<N:   #If there's space left to insert
@@ -30,6 +30,25 @@ def insert():   #Post request JSON body format: {"num":1}
 @app.route("/api/get_size", methods=['GET'])   #Endpoint for getting total elements
 def get_size():
     return jsonify({'total_elements': Chunk.total_elements})
+
+@app.route("/api/remove/", methods=['POST'])   #Endpoint for removing a number
+def remove():
+    if not request.json or not 'num' in request.json:   #If request body is incorrect
+        abort(400)
+    num = request.json['num']   #Retrieve number from request
+    for x in chunks:  #For each chunk
+         if num in x.data:   #Check if num is there in the chunk
+            x.data.remove(num)   #Remove number from chunk
+            Chunk.total_elements -= 1   #Update total elements
+            return jsonify({'response': 'Successfully Deleted!'})
+    return jsonify({'response': 'Failed!'})
+
+@app.route("/api/clear", methods=['GET'])   #Endpoint for clearing all chunks
+def clear():
+    for x in chunks:  #For each chunk
+         x.data = set()   #Clear the chunk
+    Chunk.total_elements=0   #Update total elements
+    return jsonify({'response': 'Cleared!'})
 
 if __name__ == '__main__':
     N = 9   #ChunkedSet of size
