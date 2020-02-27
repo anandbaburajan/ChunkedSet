@@ -27,6 +27,10 @@ def insert():   #Post request JSON body format: {"num":1}
     else:
         return jsonify({'response': 'Failed!'})
 
+@app.route("/api/get_size", methods=['GET'])   #Endpoint for getting total elements
+def get_size():
+    return jsonify({'total_elements': Chunk.total_elements})
+
 if __name__ == '__main__':
     N = 9   #ChunkedSet of size
     k = 3   #Maximum capacity of a chunk

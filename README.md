@@ -18,7 +18,7 @@ How to run?
 python app.py
 ```
 
-Use Postman or your any tool of your for API testing
+Use Postman or any tool of your choice for API testing
 
 Endpoints
 ------------
