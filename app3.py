@@ -72,6 +72,30 @@ def get_size():
     total = s3 + s1['chunk_size'] + s2['chunk_size']
     return jsonify({'total': total})
 
+@app3.route("/api/remove/", methods=['POST'])   #Endpoint for removing a number
+def remove():
+    if not request.json or not 'num' in request.json:   #If request body is incorrect
+        abort(400)
+    num = request.json['num']   #Retrieve number from request
+    if 'check' in request.json and request.json['check']:   #Request coming from another chunk to remove
+        if num in C.data:
+            C.data.remove(num)   #Remove number from chunk
+            return jsonify({'response': 'Successfully Deleted!'})
+        return jsonify({'response': 'Failed!'})
+    if num in C.data:
+        C.data.remove(num)   #Remove number from chunk
+        return jsonify({'response': 'Successfully Deleted!'})
+    url_remove_1 = 'http://localhost:8001/api/remove'   #Check for num in A
+    r1 = requests.post(url_remove_1, json = {'num':num, 'check':1}).json()
+    if r1['response'] == 'Successfully Deleted!':
+        return jsonify({'response': 'Successfully Deleted!'})
+    else:
+        url_remove_3 = 'http://localhost:8003/api/remove'   #Check for num in C
+        r3 = requests.post(url_remove_3, json = {'num':num, 'check':1}).json()
+    if r3['response'] == 'Successfully Deleted!':
+        return jsonify({'response': 'Successfully Deleted!'})
+    return jsonify({'response': 'Failed!'})
+
 @app3.route("/api/clear", methods=['POST'])   #Endpoint for clearing all chunks
 def clear():
     if request.json and 'ready' in request.json and request.json['ready']:   #Direct request to clear from another chunk
@@ -79,9 +103,9 @@ def clear():
         return jsonify({'response': 'Cleared!'})
     C.data = set()
     url_clear_1 = 'http://localhost:8001/api/clear'
-    c1 = requests.post(url_clear_1, json = {'ready':1}).json()
+    c1 = requests.post(url_clear_1, json = {'ready':1}).json()   #Clear A
     url_clear_2 = 'http://localhost:8002/api/clear'
-    c2 = requests.post(url_clear_2, json = {'ready':1}).json()
+    c2 = requests.post(url_clear_2, json = {'ready':1}).json()   #Clear B
     return jsonify({'response': 'Cleared!'})
 
 if __name__ == '__main__':
