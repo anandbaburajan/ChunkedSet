@@ -15,17 +15,20 @@ How to run?
 ------------
 
 ```bash
-python app.py
+python app1.py
+python app2.py
+python app3.py
 ```
 
 Use Postman or any tool of your choice for API testing
 
 Endpoints
 ------------
+Chunk A (Port: 8001), Chunk B (Port: 8002) and Chunk C (Port: 8003)
 
 ```bash
-http://localhost:5000/api/insert/     #Post request JSON body format: {"num":1}
-http://localhost:5000/api/get_size/
-http://localhost:5000/api/remove/     #Post request JSON body format: {"num":1}
-http://localhost:5000/api/clear/
+http://localhost:port/api/insert/     #Post request JSON body format: {"num":1}
+http://localhost:port/api/get_size/
+http://localhost:port/api/remove/     #Post request JSON body format: {"num":1}
+http://localhost:port/api/clear/
 ```
