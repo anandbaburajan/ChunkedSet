@@ -72,6 +72,18 @@ def get_size():
     total = s2 + s1['chunk_size'] + s3['chunk_size']
     return jsonify({'total': total})
 
+@app2.route("/api/clear", methods=['POST'])   #Endpoint for clearing all chunks
+def clear():
+    if request.json and 'ready' in request.json and request.json['ready']:   #Direct request to clear from another chunk
+        B.data = set()
+        return jsonify({'response': 'Cleared!'})
+    B.data = set()
+    url_clear_1 = 'http://localhost:8001/api/clear'
+    c1 = requests.post(url_clear_1, json = {'ready':1}).json()
+    url_clear_3 = 'http://localhost:8003/api/clear'
+    c3 = requests.post(url_clear_3, json = {'ready':1}).json()
+    return jsonify({'response': 'Cleared!'})
+
 if __name__ == '__main__':
     k=3
     B = Chunk("B",k)   #New chunk with max capacity 3
